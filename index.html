@@ -11,6 +11,7 @@
       #messages { list-style-type: none; margin: 0; padding: 0; }
       #messages li { padding: 5px 10px; }
       #messages li:nth-child(odd) { background: #eee; }
+      #m {color: black; }
     </style>
   </head>
   <body>
@@ -20,37 +21,46 @@
         <p id="error" style="color:red; text-align: center;"></p>
         <div id="chatwindow2" style="background : #444;color:#fff;overflow-Y:auto;margin:0 auto;margin-bottom:25px;padding:10px; width:490px;border:1px solid #ACD8F0;position:bottom">
         <div style="background:rgb(126,245,186);color:black;margin: 20px;text-align:left;">
-          <ul id="messages"></ul>
+          <div id="messages"></div>
         </div>
-        <input id="m" autocomplete="off" /><button>Send</button>
+        <input id="m" autocomplete="off" /><button id="add_status">Send</button>
         </div>
     </form>
    
     <script src="/socket.io/socket.io.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <script src = "http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script>
-      $(function () {
+      $(document).ready(function(){
+        // $.ajax({
+        //   type:"get",
+        //   url:'http://localhost:3000/rows',
+        //   success:function(res)
+        //   { 
+        //     // var content = '';
+
+        //     // var data = $.parseJSON(res);
+        //     //alert(res);
+        //    $.each(data, function(i, post) {
+        //     content +=  post + '<br>';
+        //    });
+        //    $(content).appendTo("#messages");
+        //   }
+        // });
         var socket = io();
-          $('form').submit(function(e){
-          e.preventDefault(); // prevents page reloading
-          if($('#m').val()=="") {
-            $('#error').text("*Please enter message");
-          }
-          else {
-            socket.emit('chat message', $('#m').val());
-            $('#m').val('');
-            $('#error').text("");
-            return false;
-          }
-          
+        $('form').submit(function(e){
+          e.preventDefault();
+          socket.emit('status added',$("#m").val());
+          $('#m').val('');
         });
-        
-        socket.on('chat message', function(msg){
-          $('#messages').append($('<li>').text(msg));
+        socket.on('refresh feed',function(msg){
+          $("#messages").append(msg + '<br /><br />');
         });
-        
-        
       });
+      
     </script>
+
   </body>
 </html>
